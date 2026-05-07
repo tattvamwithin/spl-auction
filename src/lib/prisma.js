@@ -3,8 +3,10 @@ import { PrismaNeon } from '@prisma/adapter-neon';
 import { Pool, neonConfig } from '@neondatabase/serverless';
 import ws from 'ws';
 
-// Set up the Neon adapter - fix for 'bind' error by ensuring we use the correct constructor
-neonConfig.webSocketConstructor = ws.default || ws;
+// Set up the Neon adapter - more robust WebSocket constructor detection
+// This supports both local (Node.js) and Vercel environments
+const WebSocket = ws.WebSocket || ws.default || ws;
+neonConfig.webSocketConstructor = WebSocket;
 
 const connectionString = process.env.DATABASE_URL;
 
