@@ -3,9 +3,11 @@ import { PrismaNeon } from '@prisma/adapter-neon';
 import { Pool, neonConfig } from '@neondatabase/serverless';
 import ws from 'ws';
 
-// Set up the Neon adapter
-neonConfig.webSocketConstructor = ws;
+// Set up the Neon adapter - fix for 'bind' error by ensuring we use the correct constructor
+neonConfig.webSocketConstructor = ws.default || ws;
+
 const connectionString = process.env.DATABASE_URL;
+
 const pool = new Pool({ connectionString });
 const adapter = new PrismaNeon(pool);
 
