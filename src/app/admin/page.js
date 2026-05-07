@@ -76,12 +76,18 @@ export default function AdminPage() {
             };
           });
           
-          const result = await bulkAddPlayers(parsedPlayers);
-          setIsUploading(false);
-          if (result && result.count > 0) {
-            alert(`Successfully imported ${result.count} new players!`);
-          } else {
-            alert('No new players added. All players in the CSV are already present in the database.');
+          try {
+            const result = await bulkAddPlayers(parsedPlayers);
+            setIsUploading(false);
+            if (result && result.count > 0) {
+              alert(`Successfully imported ${result.count} new players!`);
+            } else {
+              alert('No new players added. All players in the CSV are already present in the database.');
+            }
+          } catch (error) {
+            console.error('Import Error:', error);
+            setIsUploading(false);
+            alert('Failed to upload players. The file might be too large or there is a database connection issue.');
           }
         },
         error: (error) => {
