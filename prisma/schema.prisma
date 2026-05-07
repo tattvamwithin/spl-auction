@@ -1,0 +1,49 @@
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Player {
+  id            String   @id @default(cuid())
+  name          String
+  age           Int
+  role          String
+  category      String
+  basePrice     Int
+  profilePhoto  String?
+  status        String   @default("Available")
+  soldTo        String?
+  soldPrice     Int?     @default(0)
+  reserved      Boolean  @default(false)
+  jerseyNumber  String?
+  mobileNumber  String?
+  team          Team?    @relation(fields: [soldTo], references: [id])
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model Team {
+  id              String   @id @default(cuid())
+  name            String
+  owner           String?
+  budgetRemaining Int
+  logo            String?
+  players         Player[]
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model AuctionHistory {
+  id         String   @id @default(cuid())
+  playerId   String
+  playerName String
+  teamId     String
+  teamName   String
+  price      Int
+  timestamp  DateTime @default(now())
+}
